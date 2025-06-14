@@ -1,7 +1,6 @@
 use async_trait::async_trait;
 use hyper::{Body, Request, Response};
-use futures::future::BoxFuture;
-use super::router::{Router, Handler};
+use super::router::Router;
 use std::sync::Arc;
 
 /// Трейт для CRUD-ресурсов
@@ -24,7 +23,7 @@ impl Router {
             move |req| {
                 let resource = resource.clone();
                 Box::pin(async move {
-                    let id = req.uri().path().split('/').last().unwrap().parse().unwrap();
+                    let id = req.uri().path().split('/').next_back().unwrap().parse().unwrap();
                     resource.get(id).await
                 })
             }
@@ -48,7 +47,7 @@ impl Router {
             move |req| {
                 let resource = resource.clone();
                 Box::pin(async move {
-                    let id = req.uri().path().split('/').last().unwrap().parse().unwrap();
+                    let id = req.uri().path().split('/').next_back().unwrap().parse().unwrap();
                     let data = extract_body(req).await.unwrap_or_default();
                     resource.update(id, data).await
                 })
@@ -61,7 +60,7 @@ impl Router {
             move |req| {
                 let resource = resource.clone();
                 Box::pin(async move {
-                    let id = req.uri().path().split('/').last().unwrap().parse().unwrap();
+                    let id = req.uri().path().split('/').next_back().unwrap().parse().unwrap();
                     resource.delete(id).await
                 })
             }

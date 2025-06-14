@@ -25,7 +25,15 @@ impl Router {
     pub fn new() -> Self {
         Self { routes: Vec::new() }
     }
+}
 
+impl Default for Router {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
+impl Router {
     pub fn get<F>(&mut self, path: &str, handler: F) -> RouteBuilder
     where
         F: Fn(Request<Body>) -> BoxFuture<'static, Response<Body>> + Send + Sync + 'static,
@@ -121,7 +129,7 @@ impl<'a> RouteBuilder<'a> {
     }
 }
 
-impl<'a> Drop for RouteBuilder<'a> {
+impl Drop for RouteBuilder<'_> {
     fn drop(&mut self) {
         if !self.committed {
             self.router.routes.push(self.route.clone());

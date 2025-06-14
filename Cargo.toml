@@ -4,7 +4,9 @@ version = "0.1.0"
 edition = "2021"
 description = "A lightweight, async HTTP router for Rust with middleware support"
 license = "MIT"
-repository = "https://github.com/your-username/rust-router"
+repository = "https://github.com/Ayr2017/frege"
+homepage = "https://github.com/Ayr2017/frege"
+readme = "README.md"
 keywords = ["http", "router", "async", "middleware", "web"]
 categories = ["web-programming"]
 

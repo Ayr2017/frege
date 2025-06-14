@@ -1,7 +1,7 @@
-use frege::{Router, Handler};
-use hyper::{Body, Request, Response, StatusCode};
-use hyper::server::Server;
+use frege::{Handler, Router};
 use futures::future::BoxFuture;
+use hyper::server::Server;
+use hyper::{Body, Request, Response, StatusCode};
 
 fn logging_middleware(req: Request<Body>, next: Handler) -> BoxFuture<'static, Response<Body>> {
     Box::pin(async move {
@@ -22,7 +22,8 @@ fn hello_handler(_req: Request<Body>) -> BoxFuture<'static, Response<Body>> {
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let mut router = Router::new();
-    router.get("/hello", hello_handler)
+    router
+        .get("/hello", hello_handler)
         .middlewares(logging_middleware);
 
     let addr = ([127, 0, 0, 1], 3000).into();

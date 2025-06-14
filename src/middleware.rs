@@ -29,7 +29,8 @@ where
         vec![
             Arc::new(self.0) as Middleware,
             Arc::new(self.1) as Middleware,
-        ].into_iter()
+        ]
+        .into_iter()
     }
 }
 
@@ -45,6 +46,7 @@ where
             Arc::new(self.0) as Middleware,
             Arc::new(self.1) as Middleware,
             Arc::new(self.2) as Middleware,
-        ].into_iter()
+        ]
+        .into_iter()
     }
 }

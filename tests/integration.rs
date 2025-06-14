@@ -1,10 +1,10 @@
-use frege::{Router, Resource, Handler};
-use hyper::{Body, Request, Response, StatusCode, Method};
-use hyper::server::Server;
-use hyper::client::Client;
 use async_trait::async_trait;
-use tokio::net::TcpListener;
+use frege::{Handler, Resource, Router};
 use futures::future::BoxFuture;
+use hyper::client::Client;
+use hyper::server::Server;
+use hyper::{Body, Method, Request, Response, StatusCode};
+use tokio::net::TcpListener;
 
 struct TestResource;
 
@@ -37,9 +37,7 @@ impl Resource for TestResource {
 }
 
 fn logging_middleware(req: Request<Body>, next: Handler) -> BoxFuture<'static, Response<Body>> {
-    Box::pin(async move {
-        next(req).await
-    })
+    Box::pin(async move { next(req).await })
 }
 
 fn hello_handler(_req: Request<Body>) -> BoxFuture<'static, Response<Body>> {
@@ -54,7 +52,8 @@ fn hello_handler(_req: Request<Body>) -> BoxFuture<'static, Response<Body>> {
 #[tokio::test]
 async fn test_router() {
     let mut router = Router::new();
-    router.get("/hello", hello_handler)
+    router
+        .get("/hello", hello_handler)
         .middlewares(logging_middleware);
     router.resource("/users", TestResource);
 
@@ -62,26 +61,31 @@ async fn test_router() {
     let listener = TcpListener::bind(addr).await.unwrap();
     let addr = listener.local_addr().unwrap();
 
-    let server = Server::bind(&addr)
-        .serve(hyper::service::make_service_fn(move |_| {
-            let router = router.clone();
-            async move {
-                Ok::<_, hyper::Error>(hyper::service::service_fn(move |req| {
-                    let router = router.clone();
-                    async move { Ok::<_, hyper::Error>(router.handle(req).await) }
-                }))
-            }
-        }));
+    let server = Server::bind(&addr).serve(hyper::service::make_service_fn(move |_| {
+        let router = router.clone();
+        async move {
+            Ok::<_, hyper::Error>(hyper::service::service_fn(move |req| {
+                let router = router.clone();
+                async move { Ok::<_, hyper::Error>(router.handle(req).await) }
+            }))
+        }
+    }));
 
     tokio::spawn(server);
     let client = Client::new();
 
-    let resp = client.get(format!("http://{}/hello", addr).parse().unwrap()).await.unwrap();
+    let resp = client
+        .get(format!("http://{}/hello", addr).parse().unwrap())
+        .await
+        .unwrap();
     assert_eq!(resp.status(), StatusCode::OK);
     let body = hyper::body::to_bytes(resp.into_body()).await.unwrap();
     assert_eq!(body, "Hello");
 
-    let resp = client.get(format!("http://{}/users/1", addr).parse().unwrap()).await.unwrap();
+    let resp = client
+        .get(format!("http://{}/users/1", addr).parse().unwrap())
+        .await
+        .unwrap();
     assert_eq!(resp.status(), StatusCode::OK);
     let body = hyper::body::to_bytes(resp.into_body()).await.unwrap();
     assert_eq!(body, "User 1");
