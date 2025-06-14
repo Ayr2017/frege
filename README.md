@@ -10,4 +10,4 @@ A lightweight, async HTTP router for Rust with middleware support.
 ## Installation
 ```toml
 [dependencies]
-rust-router = "0.1"
+frege = "0.1"
