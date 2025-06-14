@@ -1,6 +1,17 @@
 [package]
 name = "frege"
 version = "0.1.0"
-edition = "2024"
+edition = "2021"
+description = "A lightweight, async HTTP router for Rust with middleware support"
+license = "MIT"
+repository = "https://github.com/your-username/rust-router"
+keywords = ["http", "router", "async", "middleware", "web"]
+categories = ["web-programming"]
 
 [dependencies]
+hyper = { version = "0.14", features = ["server", "client", "tcp", "http1", "runtime"] }
+futures = "0.3"
+async-trait = "0.1"
+
+[dev-dependencies]
+tokio = { version = "1", features = ["full"] }
