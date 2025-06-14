@@ -11,3 +11,5 @@ A lightweight, async HTTP router for Rust with middleware support.
 ```toml
 [dependencies]
 frege = "0.1"
+
+[![Crates.io](https://img.shields.io/crates/v/frege.svg)](https://crates.io/crates/frege)
